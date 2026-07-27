@@ -103,16 +103,6 @@ body::before {
   color: var(--ink);
 }
 
-.lede {
-  max-width: 27rem;
-  margin: 0 auto;
-  font-family: var(--serif);
-  font-size: clamp(1.12rem, 4vw, 1.35rem);
-  font-style: italic;
-  line-height: 1.6;
-  color: var(--ink-soft);
-}
-
 /* thin gold divider with a heart resting on it */
 .rule {
   display: flex;
@@ -162,24 +152,28 @@ body::before {
   border-radius: inherit;
 }
 
+/* iOS underlines links harder than text-decoration:none alone survives */
+.night-link,
+.night-link * {
+  text-decoration: none !important;
+  -webkit-text-decoration: none !important;
+}
+
 .night-link:focus-visible {
   outline: 2px solid var(--rose);
   outline-offset: 3px;
 }
 
-/* little arrow marking each card as tappable */
-.go {
-  font-family: var(--sans);
-  font-size: .62em;
-  font-weight: 400;
-  color: var(--gold);
-  vertical-align: .15em;
-  transition: color .3s ease, transform .3s ease;
-  display: inline-block;
+/* iOS Safari wraps detected dates/times/addresses in its own tappable link
+   and styles it blue-and-underlined. Strip that back to plain text. */
+a[x-apple-data-detectors] {
+  color: inherit !important;
+  font: inherit !important;
+  letter-spacing: inherit !important;
+  text-decoration: none !important;
+  -webkit-text-decoration: none !important;
+  pointer-events: none;
 }
-
-.night-link:hover .go,
-.night-link:active .go { color: var(--rose); }
 
 /* hover lift only where there's a real pointer; phones get a tap press instead */
 @media (hover: hover) {
