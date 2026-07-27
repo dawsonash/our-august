@@ -280,20 +280,6 @@ footer .sign {
   color: var(--rose);
 }
 
-/* ---------- scroll reveal ---------- */
-
-/* .js is set by script.js, so cards stay visible if scripting is off */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(26px);
-}
-
-.js .reveal.shown {
-  opacity: 1;
-  transform: none;
-  transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .3, 1);
-}
-
 /* ---------- narrow screens ---------- */
 
 @media (max-width: 30rem) {
@@ -340,12 +326,4 @@ footer .sign {
   .night { transition: none; }
   .night:hover,
   .night:active { transform: none; box-shadow: var(--shadow); }
-
-  .reveal,
-  .js .reveal,
-  .js .reveal.shown {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
