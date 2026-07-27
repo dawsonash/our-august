@@ -143,17 +143,43 @@ body::before {
 }
 
 .night {
-  display: flex;
-  gap: 1.75rem;
-  align-items: flex-start;
   margin-bottom: 1.5rem;
-  padding: 1.9rem 1.9rem 1.75rem;
   background: var(--card);
   border: 1px solid rgba(217, 195, 160, .55);
   border-radius: 1.1rem;
   box-shadow: var(--shadow);
   transition: transform .35s cubic-bezier(.2, .7, .3, 1), box-shadow .35s ease;
 }
+
+/* the whole card is the tap target */
+.night-link {
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+  padding: 1.75rem 1.9rem;
+  color: inherit;
+  text-decoration: none;
+  border-radius: inherit;
+}
+
+.night-link:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 3px;
+}
+
+/* little arrow marking each card as tappable */
+.go {
+  font-family: var(--sans);
+  font-size: .62em;
+  font-weight: 400;
+  color: var(--gold);
+  vertical-align: .15em;
+  transition: color .3s ease, transform .3s ease;
+  display: inline-block;
+}
+
+.night-link:hover .go,
+.night-link:active .go { color: var(--rose); }
 
 /* hover lift only where there's a real pointer; phones get a tap press instead */
 @media (hover: hover) {
@@ -222,23 +248,15 @@ body::before {
   color: var(--ink);
 }
 
-.what h2 em { font-style: italic; font-weight: 400; }
-
 .mark { color: var(--rose); font-size: .8em; }
 
 .meta {
-  margin: 0 0 .8rem;
+  margin: 0;
   font-size: .8rem;
   font-weight: 400;
   letter-spacing: .09em;
   text-transform: uppercase;
   color: var(--rose-deep);
-}
-
-.blurb {
-  margin: 0;
-  font-size: 1rem;
-  color: var(--ink-soft);
 }
 
 /* ---------- footer ---------- */
@@ -288,9 +306,9 @@ footer .sign {
   body { padding: 0 1rem 3rem; }
   .masthead { padding: 3.5rem 0 2.5rem; }
 
-  .night {
+  .night-link {
     display: block;
-    padding: 1.5rem 1.4rem;
+    padding: 1.4rem 1.4rem 1.5rem;
   }
 
   /* date rail becomes an inline chip above the title */
