@@ -1,0 +1,339 @@
+:root {
+  --cream:      #fdf8f3;
+  --card:       #fffcf8;
+  --rose:       #c76a72;
+  --rose-deep:  #a8505a;
+  --ink:        #4a3630;
+  --ink-soft:   #7a6259;
+  --gold:       #d9c3a0;
+  --shadow:     18px 40px -24px rgba(120, 78, 68, .28);
+  --shadow-lift:22px 52px -22px rgba(120, 78, 68, .38);
+  --serif: "Cormorant Garamond", Iowan Old Style, Palatino, Georgia, serif;
+  --sans:  "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Cormorant defaults to old-style figures, which turn 1/11/5000 into
+   descending, roman-looking glyphs. Lining figures everywhere. */
+body, .day, .what h2 {
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1, "onum" 0;
+}
+
+body {
+  margin: 0;
+  padding: 0 1.25rem 4rem;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* soft radial warmth behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(60rem 40rem at 50% -10%, rgba(199, 106, 114, .10), transparent 70%),
+    radial-gradient(50rem 40rem at 110% 100%, rgba(217, 195, 160, .22), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- drifting hearts ---------- */
+
+.hearts {
+  --heart-peak: .30;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hearts span {
+  position: absolute;
+  bottom: -8vh;
+  color: var(--rose);
+  opacity: 0;
+  animation: drift linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes drift {
+  0%   { transform: translateY(0) rotate(0deg);       opacity: 0; }
+  12%  {                        opacity: var(--heart-peak); }
+  85%  {                        opacity: calc(var(--heart-peak) * .6); }
+  100% { transform: translateY(-115vh) rotate(24deg);  opacity: 0; }
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 5rem 0 3.5rem;
+  text-align: center;
+}
+
+.hello {
+  margin: 0 0 .75rem;
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: .78rem;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+.masthead h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(3.1rem, 15vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: .01em;
+  color: var(--ink);
+}
+
+.lede {
+  max-width: 27rem;
+  margin: 0 auto;
+  font-family: var(--serif);
+  font-size: clamp(1.12rem, 4vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* thin gold divider with a heart resting on it */
+.rule {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  width: min(15rem, 70%);
+  margin: 1.5rem auto;
+  color: var(--rose);
+}
+
+.rule::before,
+.rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.rule span { font-size: .85rem; line-height: 1; }
+
+/* ---------- the nights ---------- */
+
+.nights {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.night {
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding: 1.9rem 1.9rem 1.75rem;
+  background: var(--card);
+  border: 1px solid rgba(217, 195, 160, .55);
+  border-radius: 1.1rem;
+  box-shadow: var(--shadow);
+  transition: transform .35s cubic-bezier(.2, .7, .3, 1), box-shadow .35s ease;
+}
+
+/* hover lift only where there's a real pointer; phones get a tap press instead */
+@media (hover: hover) {
+  .night:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+
+.night:active {
+  transform: scale(.988);
+  box-shadow: var(--shadow-lift);
+}
+
+/* date rail */
+.when {
+  flex: 0 0 auto;
+  width: 4.25rem;
+  padding-right: 1.5rem;
+  border-right: 1px solid rgba(217, 195, 160, .7);
+  text-align: center;
+  line-height: 1;
+}
+
+.mon {
+  display: block;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+.day {
+  display: block;
+  margin: .3rem 0 .45rem;
+  font-family: var(--serif);
+  font-size: 2.9rem;
+  font-weight: 400;
+  color: var(--ink);
+  /* Cormorant ships old-style figures by default, which renders 1 and 11
+     as I and II. Force lining figures so the dates read as numbers. */
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1, "onum" 0;
+}
+
+.dow {
+  display: block;
+  font-size: .64rem;
+  font-weight: 300;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* card body */
+.what { min-width: 0; }
+
+.what h2 {
+  margin: 0 0 .35rem;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 5.5vw, 1.85rem);
+  line-height: 1.2;
+  letter-spacing: .005em;
+  color: var(--ink);
+}
+
+.what h2 em { font-style: italic; font-weight: 400; }
+
+.mark { color: var(--rose); font-size: .8em; }
+
+.meta {
+  margin: 0 0 .8rem;
+  font-size: .8rem;
+  font-weight: 400;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--rose-deep);
+}
+
+.blurb {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- footer ---------- */
+
+footer {
+  max-width: 42rem;
+  margin: 3.5rem auto 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+footer p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.45rem;
+  font-style: italic;
+}
+
+footer .sign {
+  margin-top: .4rem;
+  font-family: var(--sans);
+  font-size: .74rem;
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+/* ---------- scroll reveal ---------- */
+
+/* .js is set by script.js, so cards stay visible if scripting is off */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+.js .reveal.shown {
+  opacity: 1;
+  transform: none;
+  transition: opacity .8s ease, transform .8s cubic-bezier(.2, .7, .3, 1);
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 30rem) {
+  body { padding: 0 1rem 3rem; }
+  .masthead { padding: 3.5rem 0 2.5rem; }
+
+  .night {
+    display: block;
+    padding: 1.5rem 1.4rem;
+  }
+
+  /* date rail becomes an inline chip above the title */
+  .when {
+    display: flex;
+    align-items: baseline;
+    gap: .5rem;
+    width: auto;
+    margin-bottom: .85rem;
+    padding: 0 0 .8rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(217, 195, 160, .7);
+    text-align: left;
+  }
+
+  .day {
+    margin: 0;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--rose);
+  }
+
+  .dow { margin-left: auto; }
+
+  /* fewer, fainter hearts so they don't crowd a small screen */
+  .hearts { --heart-peak: .17; }
+  .hearts span:nth-child(n + 8) { display: none; }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hearts { display: none; }
+
+  .night { transition: none; }
+  .night:hover,
+  .night:active { transform: none; box-shadow: var(--shadow); }
+
+  .reveal,
+  .js .reveal,
+  .js .reveal.shown {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
