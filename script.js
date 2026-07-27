@@ -40,6 +40,10 @@
   function sweep() {
     var fold = window.innerHeight || document.documentElement.clientHeight;
 
+    /* No viewport yet (page opened in a background tab, say) means every
+       rect measures as off-screen. Don't hide the page waiting for one. */
+    if (!fold) { showAll(); return; }
+
     cards = cards.filter(function (card) {
       var box = card.getBoundingClientRect();
       if (box.top < fold * 0.92 && box.bottom > 0) {
@@ -52,11 +56,19 @@
     if (!cards.length) {
       window.removeEventListener('scroll', sweep);
       window.removeEventListener('resize', sweep);
+      window.removeEventListener('pageshow', sweep);
+      window.removeEventListener('load', sweep);
+      document.removeEventListener('visibilitychange', sweep);
     }
   }
 
   window.addEventListener('scroll', sweep, { passive: true });
   window.addEventListener('resize', sweep);
+  /* a tab opened in the background gets its real viewport only once shown,
+     and its timers stay frozen until then */
+  document.addEventListener('visibilitychange', sweep);
+  window.addEventListener('pageshow', sweep);
+  window.addEventListener('load', sweep);
 
   sweep();
   /* if anything above went sideways, show the content anyway */
