@@ -3,16 +3,16 @@
 
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Cards start hidden only once we know JS is running to reveal them again,
+  if (calm) return; /* leave the page in its plain, fully-visible state */
+
+  /* Cards only start hidden once we know JS is running to bring them back,
      so the page still reads fine with scripting off. */
-  if (!calm) document.documentElement.classList.add('js');
+  document.documentElement.classList.add('js');
 
   /* ---- drifting hearts ---- */
 
-  function sowHearts() {
-    var layer = document.querySelector('.hearts');
-    if (!layer) return;
-
+  var layer = document.querySelector('.hearts');
+  if (layer) {
     for (var i = 0; i < 14; i++) {
       var heart = document.createElement('span');
       heart.textContent = '♡';
@@ -24,29 +24,42 @@
     }
   }
 
-  /* ---- fade cards in as they scroll into view ---- */
+  /* ---- fade cards in as they scroll into view ----
+     Plain rect math rather than IntersectionObserver: the observer can fail
+     to deliver a first callback in some situations, and a card that never
+     gets `shown` is a card nobody ever reads. A timer backstop guarantees
+     everything is visible regardless. */
 
-  function revealOnScroll() {
-    var cards = document.querySelectorAll('.reveal');
+  var cards = [].slice.call(document.querySelectorAll('.reveal'));
 
-    if (!('IntersectionObserver' in window)) {
-      for (var i = 0; i < cards.length; i++) cards[i].classList.add('shown');
-      return;
+  function showAll() {
+    cards.forEach(function (card) { card.classList.add('shown'); });
+    cards.length = 0;
+  }
+
+  function sweep() {
+    var fold = window.innerHeight || document.documentElement.clientHeight;
+
+    cards = cards.filter(function (card) {
+      var box = card.getBoundingClientRect();
+      if (box.top < fold * 0.92 && box.bottom > 0) {
+        card.classList.add('shown');
+        return false;
+      }
+      return true;
+    });
+
+    if (!cards.length) {
+      window.removeEventListener('scroll', sweep);
+      window.removeEventListener('resize', sweep);
     }
-
-    var watcher = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('shown');
-        watcher.unobserve(entry.target);
-      });
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
-
-    cards.forEach(function (card) { watcher.observe(card); });
   }
 
-  if (!calm) {
-    sowHearts();
-    revealOnScroll();
-  }
+  window.addEventListener('scroll', sweep, { passive: true });
+  window.addEventListener('resize', sweep);
+
+  sweep();
+  /* if anything above went sideways, show the content anyway */
+  setTimeout(sweep, 400);
+  setTimeout(showAll, 2500);
 })();
